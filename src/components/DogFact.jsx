@@ -1,10 +1,20 @@
-// DogFact Component
-export const DogFact = () => {
-  // Hint: Extract the 'body' from 'attributes' of the 'fact' prop
 
-  // Hint: Render the 'cleanFact' if available, otherwise show a loading message
-  return <div>dog fact here.</div>;
-};
+import PropTypes from "prop-types";
+export const DogFact = ({ fact }) => {
+	// Add prop validation for 'fact' prop
+	DogFact.propTypes = {
+		fact: PropTypes.string.isRequired,
+	};
 
-// Hint: To use this component, import it in your main App component and pass the 'fact' prop to it.
-// Example: <DogFact fact={yourFactData} />
+	if (!fact) {
+		return <div>Loading...</div>;
+	} else {
+		return (
+			<div>
+				<h2>Dog Fact</h2>
+				<div>{fact}</div>
+
+			</div>
+		);
+	}
+}

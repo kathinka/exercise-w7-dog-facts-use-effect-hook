@@ -1,15 +1,35 @@
-// Import required  hooks
+// Import required hooks
+import { useEffect, useState } from "react";
 import { DogFact } from "./components/DogFact";
 
 export const App = () => {
-  // Hint: Initialize state for storing the dog fact
-  // Hint: Define the API endpoint
-  // Hint: Create a function to fetch the dog fact
-  // Hint: Use the useEffect hook to fetch the dog fact when the component mounts
+	const [dogFactData, setDogFactData] = useState([]);
+	const API_ENDPOINT = "https://dogapi.dog/api/v2/facts";
+	const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <div className="App">
-      <DogFact />
-    </div>
-  );
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await fetch(API_ENDPOINT);
+				if (!response.ok) {
+					throw new Error("failed to fetch data");
+				}
+				const dogFactData = await response.json();
+				setDogFactData(dogFactData.data[0].attributes.body);
+				setIsLoading(false);  // Set loading state to false after data is fetched
+			} catch (error) {
+				console.log("error fetching data", error);
+			}
+		};
+		fetchData();
+		const intervalId = setInterval(fetchData, 5000);
+		return () => clearInterval(intervalId);
+	}, []);
+
+
+	return (
+		<div className="App">
+			{isLoading ? <p>Loading</p> : <DogFact fact={dogFactData} />}
+		</div>
+	);
 };
